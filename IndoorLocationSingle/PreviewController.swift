@@ -41,6 +41,10 @@ class PreviewController: UIViewController, GMSMapViewDelegate, CLLocationManager
         Room?.text = obj.room
         Name?.text = obj.name
         
+        //TEST
+        
+        
+        
         //Places Search API
         /*
         resultsViewController = GMSAutocompleteResultsViewController()
