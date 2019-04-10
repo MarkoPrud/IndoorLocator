@@ -84,7 +84,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let cell:UITableViewCell = (self.tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier) as UITableViewCell?)!
         
         // set the text from the data model
-        cell.textLabel?.text = self.classList[indexPath.row].university
+        cell.textLabel?.text = self.classList[indexPath.row]._class
         
         return cell
     }

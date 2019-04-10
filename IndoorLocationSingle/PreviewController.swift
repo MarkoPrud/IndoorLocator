@@ -10,7 +10,7 @@ import UIKit
 import GoogleMaps
 import GooglePlaces
 
-class PreviewController: UIViewController, GMSMapViewDelegate, CLLocationManagerDelegate, UISearchDisplayDelegate{
+class PreviewController: UIViewController, UITableViewDelegate, UITableViewDataSource, GMSMapViewDelegate, CLLocationManagerDelegate, UISearchDisplayDelegate{
     
     //Places API
     var resultsViewController: GMSAutocompleteResultsViewController?
@@ -23,16 +23,25 @@ class PreviewController: UIViewController, GMSMapViewDelegate, CLLocationManager
     @IBOutlet weak var Building: UILabel!
     @IBOutlet weak var Room: UILabel!
     @IBOutlet weak var Name: UILabel!
-    var obj : CellClass = CellClass(uni: "", campus: "", _class: "", building: "", room: "", name: "")
+    @IBOutlet weak var UIMapView: UIView!
+    @IBOutlet weak var ClassTableView: UITableView!
+    
+    var obj : CellClass = CellClass(uni: "", campus: "", _class: "", building: "", room: "", name: "", coordinates: [0,0])
     var classList: [CellClass] = []
     var locationManager = CLLocationManager()
-   
-    //Map
-    let mapView = GMSMapView.map(withFrame: CGRect.zero, camera: GMSCameraPosition.camera(withLatitude: 33.937627809267894, longitude: -84.52016282826662, zoom: 60.0))
+    var mapView: GMSMapView!
+    // cell reuse id (cells that scroll out of view can be reused)
+    let identifier = "cell"
 
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //TableView Delegates and DataSource
+        self.ClassTableView.register(ClassCellPrototype.self, forCellReuseIdentifier: identifier)
+        ClassTableView.delegate = self
+        ClassTableView.dataSource = self
+        
         //Show Selected Class Values
         University?.text = obj.university
         Campus?.text = obj.campus
@@ -41,80 +50,22 @@ class PreviewController: UIViewController, GMSMapViewDelegate, CLLocationManager
         Room?.text = obj.room
         Name?.text = obj.name
         
-        //TEST
         
+        //UIView Frames
+        let recMap = CGRect(x:0,y:65,width:self.view.frame.width,height: self.view.frame.height/2 + self.view.frame.height/5)
+        let recTable = CGRect(x:0,y:self.view.frame.height/2 + self.view.frame.height/5,width:self.view.frame.width,height: self.view.frame.height/5)
         
+        //UIViews
+        UIMapView.frame = recMap
+        ClassTableView.frame = recTable
         
-        //Places Search API
-        /*
-        resultsViewController = GMSAutocompleteResultsViewController()
-        resultsViewController?.delegate = self as! GMSAutocompleteResultsViewControllerDelegate
+        //Map
+        mapView = GMSMapView.map(withFrame: UIMapView.frame, camera: GMSCameraPosition.camera(withLatitude: 33.937627809267894, longitude: -84.52016282826662, zoom: 18.5))
+        UIMapView = mapView
         
-        searchController = UISearchController(searchResultsController: resultsViewController)
-        searchController?.searchResultsUpdater = resultsViewController
-        
-        let subView = UIView(frame: CGRect(x: 0, y: 45.0, width: 350.0, height: 45.0))
-        
-        subView.addSubview((searchController?.searchBar)!)
-        view.addSubview(subView)
-        
-        searchController?.searchBar.sizeToFit()
-        searchController?.hidesNavigationBarDuringPresentation = false
-        
-        // When UISearchController presents the results view, present it in
-        // this view controller, not one further up the chain.
-        definesPresentationContext = true
- */
-        
-      
-    }
-    
-    @IBAction func Back(_ sender: Any) {
-        performSegue(withIdentifier: "back", sender: self)
-    }
-    
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        //Hold Values of List
-        let vc = segue.destination as! ViewController
-        
-        vc.classList = self.classList
-    }
- 
-    override func loadView() {
-        // Create a GMSCameraPosition that tells the map to display the
-        // coordinate -33.86,151.20 at zoom level 6.
-        
-        self.view = mapView
-        
-        //TODO: ARRAY LIST FOR EACH FLOOR; ROOM NUMBERS
-        //TODO: TABLEVIEW/MAPVIEW IN SAME VIEW. ROUTE TO DIFFERENT CLASS
-        //TODO: TOP 80% MAP; BOTTOM 20% CLASSLIST. INFO DISPLAYED: COLOR, CLASS NAME, ROOM NUMBER
-        //TURN TABLEROWS MARKERS IN BOTTOM 20% CLASSLIST TOGGLE (OPACITY CHANGE 1 TO .5)
-        //TODO: FORM: PRESET UNI-KENNESAW, CAMPUS-MARIETTA, BUILDING-ATRIUM
-        
-        
-        
-        
-        
-        // Creates a marker in the center of the map.
-        let marker = GMSMarker()
-        marker.position = CLLocationCoordinate2D(latitude: 33.937627809267894, longitude: -84.52016282826662)
-        marker.title = "Kennesaw"
-        marker.snippet = "Georgia"
-        //TODO: Change Map color
-        marker.map = mapView
-        
-        
-        //Creating Circle
-        /*
-        let circleCenter = CLLocationCoordinate2D(latitude: 34.038, longitude: -84.5816)
-        let circ = GMSCircle(position: circleCenter, radius: 500)
-        circ.fillColor = UIColor(red: 0, green: 0, blue: 1.0, alpha: 0.05)
-        circ.strokeColor = .blue
-        circ.strokeWidth = 5
-        circ.map = mapView
- */
+        self.view.addSubview(UIMapView)
+        self.view.addSubview(ClassTableView)
+       
         
         //GMS Events
         mapView.delegate = self
@@ -135,8 +86,22 @@ class PreviewController: UIViewController, GMSMapViewDelegate, CLLocationManager
         }
         
        
- 
     }
+    
+    @IBAction func Back(_ sender: Any) {
+        performSegue(withIdentifier: "back", sender: self)
+    }
+    
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        //Hold Values of List
+        let vc = segue.destination as! ViewController
+        
+        vc.classList = self.classList
+    }
+ 
+    
+ 
     //Location Manager delegates
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
@@ -155,8 +120,9 @@ class PreviewController: UIViewController, GMSMapViewDelegate, CLLocationManager
         print("You tapped at \(coordinate.latitude), \(coordinate.longitude)")
         let marker = GMSMarker()
         marker.position = CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude)
-        marker.title = "Kennesaw"
-        marker.snippet = "Georgia"
+        marker.title = "Test"
+        marker.snippet = "Marker"
+        
         //TODO: Change Map color
         marker.map = mapView
     }
@@ -186,6 +152,58 @@ extension PreviewController: GMSAutocompleteResultsViewControllerDelegate {
     
     func didUpdateAutocompletePredictions(forResultsController resultsController: GMSAutocompleteResultsViewController) {
         UIApplication.shared.isNetworkActivityIndicatorVisible = false
+    }
+    
+    //TABLE VIEW
+    
+    
+    
+    // number of rows in table view
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.classList.count
+    }
+    
+    // create a cell for each table view row
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        //Custom Cell
+        let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as! ClassCellPrototype
+        
+        let obj = ClassObject.init(ClassName: self.classList[indexPath.row].name, MarkerColor: .random(), RoomNumber: self.classList[indexPath.row].room, Longitude: 0.0, Latitude: 0.0)
+      
+        //Creates Marker for each Row
+        let marker = GMSMarker()
+        marker.position = CLLocationCoordinate2D(latitude: self.classList[indexPath.row].coordinates[0], longitude: self.classList[indexPath.row].coordinates[1])
+        marker.title = obj.ClassName
+        marker.snippet = obj.RoomNumber
+        marker.icon = GMSMarker.markerImage(with: obj.MarkerColor)
+        marker.map = mapView
+        
+        cell.product = obj
+        
+        return cell
+    }
+    
+    // method to run when table view cell is tapped
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        print("You tapped cell number \(indexPath.row).")
+        
+        //classList.remove(at: indexPath.row)
+        //tableView.reloadData()
+    }
+    
+}
+extension CGFloat {
+    static func random() -> CGFloat {
+        return CGFloat(arc4random()) / CGFloat(UInt32.max)
+    }
+}
+extension UIColor {
+    static func random() -> UIColor {
+        return UIColor(red:   .random(),
+                       green: .random(),
+                       blue:  .random(),
+                       alpha: 1.0)
     }
 }
 

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AddClassController: UIViewController{
+class AddClassController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource{
     
     @IBOutlet weak var textFieldUniversity: UITextField!
     @IBOutlet weak var textFieldCampus: UITextField!
@@ -24,11 +24,60 @@ class AddClassController: UIViewController{
     var room = ""
     var classList: [CellClass] = []
 
+    //Picker
+    @IBOutlet weak var pickerView: UIPickerView!
+    var pickerData: [String] = [String]()
+    var valueSelected = 0
+    
+    //Hashmap
+    var someProtocol = [String : [Double]]()
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //Floor1 Bottom Left
+        someProtocol["101"] = [33.93751376341245, -84.52033448964357]
+        someProtocol["106"] = [33.93743921628291, -84.52025536447763]
+        someProtocol["108"] = [33.937369954152565, -84.52023725956678]
+        someProtocol["110"] = [33.937321554076256, -84.52024798840284]
+        someProtocol["130"] = [33.93724199986803, -84.52025268226862]
+        someProtocol["132"] = [33.937191930747815, -84.52024597674608]
+        someProtocol["134"] = [33.93713184776472, -84.52025335282087]
+        
+        //Floor1 Bottom Right
+        someProtocol["135"] = [33.93714019262601, -84.52011991292238]
+        someProtocol["133"] = [33.93719693766116, -84.52010717242956]
+        someProtocol["131"] = [33.93724978839519, -84.52012594789267]
+        someProtocol["109"] = [33.937388312795036, -84.52010784298182]
+        someProtocol["107"] = [33.93744116341027, -84.52011991292238]
+
+
+        //Room List
+        pickerData = ["101", "106","108","110","130","132","134","135","133","131","107"]
+
+        //Mapping Coordinates to Room
+        self.pickerView.delegate = self
+        self.pickerView.dataSource = self
         
     }
+    // Number of columns of data
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    // The number of rows of data
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return pickerData.count
+    }
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return pickerData[row]
+
+    }
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        self.valueSelected = row
+    }
+    
     
     @IBAction func save(_ sender: Any) {
         performSegue(withIdentifier: "root", sender: self)
@@ -40,9 +89,10 @@ class AddClassController: UIViewController{
         self._class = textFieldClass.text!
         self.building = textFieldBuilding.text!
         self.name = textFieldName.text!
-        self.room = textFieldRoom.text!
+        self.room = pickerData[valueSelected]
         
-        classList.append(CellClass(uni: self.uni, campus: self.campus, _class: self._class, building: self.building, room: self.room, name: self.name))
+        
+        classList.append(CellClass(uni: self.uni, campus: self.campus, _class: self._class, building: self.building, room: self.room, name: self.name, coordinates: someProtocol[pickerData[valueSelected]] ?? [0,0]))
         
         
         let vc = segue.destination as! ViewController
@@ -53,6 +103,7 @@ class AddClassController: UIViewController{
         vc.room = self.room
         vc.name = self.name
         vc.classList = self.classList
+        
     }
    
     
