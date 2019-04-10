@@ -32,6 +32,9 @@ class PreviewController: UIViewController, UITableViewDelegate, UITableViewDataS
     var mapView: GMSMapView!
     // cell reuse id (cells that scroll out of view can be reused)
     let identifier = "cell"
+    
+    //Keep Track of Markers
+    var markers: [GMSMarker] = []
 
     
     override func viewDidLoad() {
@@ -178,7 +181,12 @@ extension PreviewController: GMSAutocompleteResultsViewControllerDelegate {
         marker.icon = GMSMarker.markerImage(with: obj.MarkerColor)
         marker.map = mapView
         
+        
+        //Add Marker to List
+        markers.append(marker)
+        
         cell.product = obj
+        
         
         return cell
     }
@@ -188,6 +196,7 @@ extension PreviewController: GMSAutocompleteResultsViewControllerDelegate {
         
         print("You tapped cell number \(indexPath.row).")
         
+        tableView.cellForRow(at: indexPath)
         //classList.remove(at: indexPath.row)
         //tableView.reloadData()
     }
