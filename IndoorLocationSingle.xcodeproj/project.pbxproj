@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2D196B8C225BDA4200A30725 /* SearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D196B8B225BDA4200A30725 /* SearchController.swift */; };
 		2D32A9D0225D1F2E00505EFC /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D32A9CF225D1F2E00505EFC /* Extension.swift */; };
 		2D32A9D2225D1F9600505EFC /* ClassCellPrototype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D32A9D1225D1F9600505EFC /* ClassCellPrototype.swift */; };
 		2D32A9D4225D20E700505EFC /* ClassObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D32A9D3225D20E700505EFC /* ClassObject.swift */; };
@@ -42,7 +41,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2D196B8B225BDA4200A30725 /* SearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SearchController.swift; path = ../../../../../Samanthalauren/Desktop/IndoorLocatorGit/IndoorLocationSingle/IndoorLocationSingle/SearchController.swift; sourceTree = "<group>"; };
 		2D32A9CF225D1F2E00505EFC /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		2D32A9D1225D1F9600505EFC /* ClassCellPrototype.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassCellPrototype.swift; sourceTree = "<group>"; };
 		2D32A9D3225D20E700505EFC /* ClassObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassObject.swift; sourceTree = "<group>"; };
@@ -129,7 +127,6 @@
 				2D9336FE2259872300E3E400 /* CellClass.swift */,
 				2D933700225989ED00E3E400 /* PreviewController.swift */,
 				2D4DE818225AB0C300CC503F /* MapsHeader.h */,
-				2D196B8B225BDA4200A30725 /* SearchController.swift */,
 				2D32A9CF225D1F2E00505EFC /* Extension.swift */,
 				2D32A9D1225D1F9600505EFC /* ClassCellPrototype.swift */,
 				2D32A9D3225D20E700505EFC /* ClassObject.swift */,
@@ -356,7 +353,6 @@
 			files = (
 				2D32A9D4225D20E700505EFC /* ClassObject.swift in Sources */,
 				2D9336FF2259872300E3E400 /* CellClass.swift in Sources */,
-				2D196B8C225BDA4200A30725 /* SearchController.swift in Sources */,
 				2D32A9D0225D1F2E00505EFC /* Extension.swift in Sources */,
 				2D9336CF225943F700E3E400 /* ViewController.swift in Sources */,
 				2D9336FB2259527700E3E400 /* AddClassController.swift in Sources */,
@@ -539,13 +535,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = M9M6Q39373;
+				DEVELOPMENT_TEAM = F64LJHRZ4B;
 				INFOPLIST_FILE = IndoorLocationSingle/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.IndoorLocationSingle1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.IndoorLocationMarko;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = MapsHeader.h;
 				SWIFT_VERSION = 5.0;
@@ -559,13 +555,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = M9M6Q39373;
+				DEVELOPMENT_TEAM = F64LJHRZ4B;
 				INFOPLIST_FILE = IndoorLocationSingle/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.IndoorLocationSingle1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.IndoorLocationMarko;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = MapsHeader.h;
 				SWIFT_VERSION = 5.0;
