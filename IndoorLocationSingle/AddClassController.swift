@@ -60,6 +60,10 @@ class AddClassController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         self.pickerView.delegate = self
         self.pickerView.dataSource = self
         
+        //self.toolBar.setBackgroundImage(UIImage(),forToolbarPosition: .any,barMetrics: .default)
+        //self.toolBar.setShadowImage(UIImage(), forToolbarPosition: .any)
+        
+        
     }
     // Number of columns of data
     func numberOfComponents(in pickerView: UIPickerView) -> Int {

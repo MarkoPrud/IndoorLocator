@@ -7,6 +7,7 @@
 //
 
 import UIKit
+/*
 class ClassCellPrototype : UITableViewCell {
     
     var product : ClassObject? {
@@ -92,3 +93,4 @@ extension UIImage {
         return img!
     }
 }
+ */

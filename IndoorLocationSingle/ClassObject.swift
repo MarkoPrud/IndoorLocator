@@ -7,10 +7,14 @@
 //
 
 import UIKit
+import GoogleMaps
 struct ClassObject{
     var ClassName : String
     var MarkerColor : UIColor
     var RoomNumber : String
     var Longitude: Double
     var Latitude: Double
+    var Markers = [[Int] : GMSMarker]()
+    var Row : Int
+    
 }

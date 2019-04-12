@@ -20,6 +20,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     var classList: [CellClass] = []
     var currentRow: Int = 0
 
+    @IBOutlet weak var toolBar: UIToolbar!
     @IBAction func AddClass(_ sender: Any) {
         
         performSegue(withIdentifier: "AddClass", sender: self)
@@ -53,7 +54,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         // This view controller itself will provide the delegate methods and row data for the table view.
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.backgroundColor = UIColor.clear
+        self.toolBar.setBackgroundImage(UIImage(),
+                                        forToolbarPosition: .any,
+                                        barMetrics: .default)
+        self.toolBar.setShadowImage(UIImage(), forToolbarPosition: .any)
         
+
         if university == ""{
             
         }
@@ -85,6 +92,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         // set the text from the data model
         cell.textLabel?.text = self.classList[indexPath.row]._class
+        cell.backgroundColor = UIColor.clear
+        cell.layer.backgroundColor = UIColor.clear.cgColor
+
         
         return cell
     }
