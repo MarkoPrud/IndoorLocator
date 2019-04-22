@@ -83,7 +83,7 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4Za-zs-Vwp">
-                                <rect key="frame" x="4" y="106" width="367" height="382"/>
+                                <rect key="frame" x="4" y="152" width="367" height="382"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
@@ -325,7 +325,7 @@
         <image name="background" width="1120" height="1990"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="XBB-6L-sRq"/>
+        <segue reference="odY-2S-Wdf"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="1" green="0.76862745098039209" blue="0.14509803921568626" alpha="0.84705882352941175" colorSpace="calibratedRGB"/>
 </document>

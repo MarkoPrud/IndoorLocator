@@ -1,0 +1,3 @@
+[submodule "IndoorLocationSingle/Alamofire"]
+	path = IndoorLocationSingle/Alamofire
+	url = https://github.com/Alamofire/Alamofire.git
