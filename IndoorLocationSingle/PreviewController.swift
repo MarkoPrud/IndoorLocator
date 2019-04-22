@@ -9,6 +9,8 @@
 import UIKit
 import GoogleMaps
 import GooglePlaces
+import Alamofire
+import SwiftyJSON
 
 class PreviewController: UIViewController, UITableViewDelegate, UITableViewDataSource, GMSMapViewDelegate,GMSIndoorDisplayDelegate, CLLocationManagerDelegate, UISearchDisplayDelegate{
     
@@ -40,6 +42,9 @@ class PreviewController: UIViewController, UITableViewDelegate, UITableViewDataS
     //[floor] = [MarkerName : GMSMarker]
     var markers =  [[Int] : GMSMarker]()
 
+    //Origin and Destination calculation
+    var origin = CLLocationCoordinate2D(latitude: 33.953228120476346, longitude: -84.51008275151253)
+    var destination = CLLocationCoordinate2D(latitude: 0, longitude: 0)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -122,7 +127,7 @@ class PreviewController: UIViewController, UITableViewDelegate, UITableViewDataS
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
         let location = locations.last
-        
+        self.origin = CLLocationCoordinate2D(latitude: ((location?.coordinate.latitude ?? nil)!)!, longitude: ((location?.coordinate.longitude ?? nil)!)!)
         let camera = GMSCameraPosition.camera(withLatitude: (location?.coordinate.latitude ?? nil)!, longitude: (location?.coordinate.longitude ?? nil)!, zoom: 17.0)
         self.mapView.animate(to: camera)
         
@@ -232,8 +237,9 @@ extension PreviewController: GMSAutocompleteResultsViewControllerDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         print("You tapped cell number \(indexPath.row).")
-        
-        tableView.cellForRow(at: indexPath)
+        self.destination = ((markers[[1, indexPath.row]]?.position ?? nil) ?? nil)!
+        drawPath(startLocation: origin, endLocation: destination)
+        //tableView.cellForRow(at: indexPath)
         //classList.remove(at: indexPath.row)
         //tableView.reloadData()
     }
@@ -266,6 +272,39 @@ extension PreviewController: GMSAutocompleteResultsViewControllerDelegate {
     
     func didChangeActiveLevel(level: GMSIndoorLevel!) {
         print("will be called after activeBuilding \(String(describing: level))")
+    }
+    func drawPath(startLocation: CLLocationCoordinate2D, endLocation: CLLocationCoordinate2D){
+
+        let origin = "\(startLocation.latitude),\(startLocation.longitude)"
+        let destination = "\(endLocation.latitude),\(endLocation.longitude)"
+        print("\(destination) : \(origin)")
+        let url = "https://maps.googleapis.com/maps/api/directions/json?origin=\(origin)&destination=\(destination)&key=AIzaSyDG-8PrJloQHG-pMJwrvJHEwr196RkhuMA"
+        Alamofire.request(url).validate
+            { request, response, data in
+            // Custom evaluation closure now includes data (allows you to parse data to dig out error messages if necessary)
+            //print("response", response);
+            return .success
+            }
+            .responseJSON(completionHandler: { (response) in
+                guard response.result.value != nil else { return }
+            let json = JSON(response.data!)
+
+            print(response.request as Any)
+            print(response.response as Any)
+            print(response.data as Any)
+            
+            let routes = json["routes"].arrayValue
+            
+            for route in routes{
+                let routeOverviewPolyline = route["overview_polyline"].dictionary
+                let points = routeOverviewPolyline?["points"]?.stringValue
+                let path = GMSPath.init(fromEncodedPath: points!)
+                let polyline = GMSPolyline.init(path: path)
+                polyline.strokeWidth = 4
+                polyline.strokeColor = UIColor.blue
+                polyline.map = self.mapView
+            }
+            })
     }
     //Prototype Cell
     class ClassCellPrototype : UITableViewCell {
