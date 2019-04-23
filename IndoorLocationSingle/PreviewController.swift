@@ -238,7 +238,19 @@ extension PreviewController: GMSAutocompleteResultsViewControllerDelegate {
         
         print("You tapped cell number \(indexPath.row).")
         self.destination = ((markers[[1, indexPath.row]]?.position ?? nil) ?? nil)!
-        drawPath(startLocation: origin, endLocation: destination)
+        
+        //draws the path to that location
+        //drawPath(startLocation: origin, endLocation: destination)
+
+        if UIApplication.shared.canOpenURL(URL(string:"comgooglemaps://")!) {
+            UIApplication.shared.openURL(URL(string:
+                "comgooglemaps://?saddr=&daddr=\(destination.latitude)),\(destination.longitude)&directionsmode=walking")!)
+        } else {
+            print("Can't use comgooglemaps://");
+        }
+        
+        
+        
         //tableView.cellForRow(at: indexPath)
         //classList.remove(at: indexPath.row)
         //tableView.reloadData()
