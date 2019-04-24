@@ -408,7 +408,8 @@
 				2D9336D6225943FB00E3E400 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
+			path = IndoorLocationSingle;
+			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXVariantGroup section */
 
@@ -535,13 +536,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = F64LJHRZ4B;
+				DEVELOPMENT_TEAM = SJ45QP2QJ9;
 				INFOPLIST_FILE = IndoorLocationSingle/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.IndoorLocationMarko;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.IndoorLocationMarko420;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = MapsHeader.h;
 				SWIFT_VERSION = 5.0;
@@ -555,13 +556,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = F64LJHRZ4B;
+				DEVELOPMENT_TEAM = SJ45QP2QJ9;
 				INFOPLIST_FILE = IndoorLocationSingle/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.IndoorLocationMarko;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.IndoorLocationMarko420;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = MapsHeader.h;
 				SWIFT_VERSION = 5.0;

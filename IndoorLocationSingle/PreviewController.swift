@@ -10,7 +10,7 @@ import UIKit
 import GoogleMaps
 import GooglePlaces
 
-class PreviewController: UIViewController, UITableViewDelegate, UITableViewDataSource, GMSMapViewDelegate, CLLocationManagerDelegate, UISearchDisplayDelegate{
+class PreviewController: UIViewController, UITableViewDelegate, UITableViewDataSource, GMSMapViewDelegate,GMSIndoorDisplayDelegate, CLLocationManagerDelegate, UISearchDisplayDelegate{
     
     //Places API
     var resultsViewController: GMSAutocompleteResultsViewController?
@@ -25,13 +25,20 @@ class PreviewController: UIViewController, UITableViewDelegate, UITableViewDataS
     @IBOutlet weak var Name: UILabel!
     @IBOutlet weak var UIMapView: UIView!
     @IBOutlet weak var ClassTableView: UITableView!
+    @IBOutlet weak var backgroundImage: UIImageView!
     
+    @IBOutlet weak var tableLabel: UIView!
+    //Custom Classes and Data Transfers
     var obj : CellClass = CellClass(uni: "", campus: "", _class: "", building: "", room: "", name: "", coordinates: [0,0])
     var classList: [CellClass] = []
     var locationManager = CLLocationManager()
     var mapView: GMSMapView!
     // cell reuse id (cells that scroll out of view can be reused)
     let identifier = "cell"
+    
+    //Keep Track of Markers
+    //[floor] = [MarkerName : GMSMarker]
+    var markers =  [[Int] : GMSMarker]()
 
     
     override func viewDidLoad() {
@@ -52,12 +59,19 @@ class PreviewController: UIViewController, UITableViewDelegate, UITableViewDataS
         
         
         //UIView Frames
-        let recMap = CGRect(x:0,y:65,width:self.view.frame.width,height: self.view.frame.height/2 + self.view.frame.height/5)
-        let recTable = CGRect(x:0,y:self.view.frame.height/2 + self.view.frame.height/5,width:self.view.frame.width,height: self.view.frame.height/5)
+        let recMap = CGRect(x:0,y:65,width:self.view.frame.width,height: self.view.frame.height/2 + 50)
+        let recLabel = CGRect(x: 0, y: self.view.frame.height/2 + 115, width: self.view.frame.width, height: 30)
         
-        //UIViews
+        let recTable = CGRect(x:0,y:self.view.frame.height/2 + 135
+            ,width:self.view.frame.width,height: self.view.frame.height/2)
+        
+        //UIViews & TableView Styling
         UIMapView.frame = recMap
         ClassTableView.frame = recTable
+        ClassTableView.backgroundColor = UIColor.clear
+      
+        tableLabel.frame = recLabel
+        tableLabel.backgroundColor = UIColor.clear
         
         //Map
         mapView = GMSMapView.map(withFrame: UIMapView.frame, camera: GMSCameraPosition.camera(withLatitude: 33.937627809267894, longitude: -84.52016282826662, zoom: 18.5))
@@ -74,6 +88,8 @@ class PreviewController: UIViewController, UITableViewDelegate, UITableViewDataS
         mapView.settings.zoomGestures = true
         mapView.isMyLocationEnabled = true
         mapView.settings.myLocationButton = true
+        mapView.delegate = self
+        mapView.indoorDisplay.delegate = self
         
         //Location Services
         self.locationManager.delegate = self
@@ -153,11 +169,6 @@ extension PreviewController: GMSAutocompleteResultsViewControllerDelegate {
     func didUpdateAutocompletePredictions(forResultsController resultsController: GMSAutocompleteResultsViewController) {
         UIApplication.shared.isNetworkActivityIndicatorVisible = false
     }
-    
-    //TABLE VIEW
-    
-    
-    
     // number of rows in table view
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.classList.count
@@ -165,10 +176,14 @@ extension PreviewController: GMSAutocompleteResultsViewControllerDelegate {
     
     // create a cell for each table view row
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        //Custom Rectangle
+
         //Custom Cell
         let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as! ClassCellPrototype
+        cell.backgroundColor = nil
         
-        let obj = ClassObject.init(ClassName: self.classList[indexPath.row].name, MarkerColor: .random(), RoomNumber: self.classList[indexPath.row].room, Longitude: 0.0, Latitude: 0.0)
+        let obj = ClassObject.init(ClassName: self.classList[indexPath.row].name, MarkerColor: .random(), RoomNumber: self.classList[indexPath.row].room, Longitude: 0.0, Latitude: 0.0, Markers: self.markers, Row: indexPath.row)
       
         //Creates Marker for each Row
         let marker = GMSMarker()
@@ -176,11 +191,41 @@ extension PreviewController: GMSAutocompleteResultsViewControllerDelegate {
         marker.title = obj.ClassName
         marker.snippet = obj.RoomNumber
         marker.icon = GMSMarker.markerImage(with: obj.MarkerColor)
-        marker.map = mapView
         
-        cell.product = obj
+        //Checks to see if the marker already exists
+        if (markers[[1, indexPath.row]] == nil){
+            marker.map = mapView
+           
+            cell.backgroundColor = UIColor.clear
+            cell.layer.backgroundColor = UIColor.clear.cgColor
+            cell.product = obj
+
+        }
+        
+        //Keeping Track Of Markers
+        if (obj.RoomNumber.first == "1"){
+            //Add Marker to ArrayList
+            if (markers[[1, indexPath.row]] == nil){
+                markers[[1 , indexPath.row]] = marker
+
+            }
+            print("Marker Added At: Floor 1 ; \(String(describing: indexPath.row)) ; \(String(describing: markers[[1, indexPath.row]]?.position))")
+
+        }
+        else{
+            //markers[2]?[indexPath.row] = marker
+        }
+       
+        //Creating Prototpe cell
+
+        
+        
         
         return cell
+        
+    }
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 65.0
     }
     
     // method to run when table view cell is tapped
@@ -188,10 +233,133 @@ extension PreviewController: GMSAutocompleteResultsViewControllerDelegate {
         
         print("You tapped cell number \(indexPath.row).")
         
+        tableView.cellForRow(at: indexPath)
         //classList.remove(at: indexPath.row)
         //tableView.reloadData()
     }
+    @objc func switchChanged(mySwitch: UISwitch) {
+        let temp = mySwitch.isOn
+        
+        // Do something
+        if temp {
+            self.markers[[1, mySwitch.tag]]?.map = mapView
+
+            //print("Marker On: Floor 1 ; \(String(describing: mySwitch.tag)) ; \(String(describing: marker.position))")
+        }
+        else{
+      
+            self.markers[[1, mySwitch.tag]]?.map = nil
+            //print("Marker Off: Floor 1 ; \(String(describing: mySwitch.tag)) ; \(String(describing: marker.position))")
+
+        }
+        
+    }
     
+    //Floor Manager Delegate
+    
+    func didChangeActiveBuilding(building: GMSIndoorBuilding!) {
+        if let currentBuilding = building {
+            var levels = currentBuilding.levels
+            mapView.indoorDisplay.activeLevel = levels[2] // set the level (key)
+        }
+    }
+    
+    func didChangeActiveLevel(level: GMSIndoorLevel!) {
+        print("will be called after activeBuilding \(String(describing: level))")
+    }
+    //Prototype Cell
+    class ClassCellPrototype : UITableViewCell {
+        var product : ClassObject? {
+            didSet {
+                classNameLabel.text = product?.ClassName
+                classFloorLabel.text = (product?.RoomNumber)
+                classRoomNumber.text = product?.RoomNumber
+                classSwitch.onTintColor = product?.MarkerColor
+                classColor.backgroundColor = product?.MarkerColor
+                classSwitch.tag = product?.Row ?? 3000
+                
+                
+            }
+        }
+        
+        private let classColor : UIImageView = {
+            
+            let imgView = UIImageView()
+            imgView.frame.size.height = 20
+            imgView.frame.size.width = 20
+            imgView.layer.borderColor = UIColor.blue.cgColor
+            
+            return imgView
+        }()
+        private let classNameLabel : UILabel = {
+            let lbl = UILabel()
+            lbl.textColor = UIColor.lightGray
+            lbl.font = UIFont.systemFont(ofSize: 13)
+            lbl.textAlignment = .left
+            return lbl
+        }()
+        
+        private let classFloorLabel : UILabel = {
+            let lbl = UILabel()
+            lbl.textColor = UIColor.lightGray
+            lbl.font = UIFont.systemFont(ofSize: 12)
+            lbl.textAlignment = .left
+            lbl.numberOfLines = 0
+            return lbl
+        }()
+        private let classRoomNumber : UILabel = {
+            let lbl = UILabel()
+            lbl.textColor = UIColor.lightGray
+            lbl.font = UIFont.systemFont(ofSize: 12)
+            lbl.textAlignment = .left
+            lbl.numberOfLines = 0
+            return lbl
+        }()
+        
+        private let classSwitch : UISwitch = {
+            let turnOnandOff = UISwitch()
+            turnOnandOff.isOn = true
+            turnOnandOff.addTarget(self, action: #selector(switchChanged), for: UIControl.Event.valueChanged)
+            return turnOnandOff
+        }()
+        
+        override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+            super.init(style: style, reuseIdentifier: reuseIdentifier)
+            addSubview(classNameLabel)
+            addSubview(classFloorLabel)
+            addSubview(classRoomNumber)
+            addSubview(classSwitch)
+            
+            
+            classNameLabel.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: nil, paddingTop: 27, paddingLeft: 10, paddingBottom: 20, paddingRight: 0, width: frame.size.width / 2, height: 0, enableInsets: false)
+            classFloorLabel.anchor(top: topAnchor, left: classNameLabel.rightAnchor, bottom: nil, right: nil, paddingTop: 27, paddingLeft: 10, paddingBottom: 0, paddingRight: 0, width: frame.size.width / 6, height: 0, enableInsets: false)
+             classRoomNumber.anchor(top: topAnchor, left: classFloorLabel.rightAnchor, bottom: nil, right: nil, paddingTop: 27, paddingLeft: 5, paddingBottom: 0, paddingRight: 0, width: frame.size.width / 6, height: 0, enableInsets: false)
+            classSwitch.anchor(top: topAnchor, left: classRoomNumber.rightAnchor, bottom: nil, right: nil, paddingTop: 18, paddingLeft: 10, paddingBottom: 0, paddingRight: 0, width: frame.size.width / 6, height: 0, enableInsets: false)
+            
+            
+            
+        }
+        
+        required init?(coder aDecoder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+        
+        
+    }
+    
+    
+}
+extension UIImage {
+    static func from(color: UIColor) -> UIImage {
+        let rect = CGRect(x: 0, y: 0, width: 1, height: 1)
+        UIGraphicsBeginImageContext(rect.size)
+        let context = UIGraphicsGetCurrentContext()
+        context!.setFillColor(color.cgColor)
+        context!.fill(rect)
+        let img = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return img!
+    }
 }
 extension CGFloat {
     static func random() -> CGFloat {
@@ -206,4 +374,5 @@ extension UIColor {
                        alpha: 1.0)
     }
 }
+
 

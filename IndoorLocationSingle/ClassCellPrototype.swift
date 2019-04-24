@@ -7,6 +7,7 @@
 //
 
 import UIKit
+/*
 class ClassCellPrototype : UITableViewCell {
     
     var product : ClassObject? {
@@ -15,6 +16,7 @@ class ClassCellPrototype : UITableViewCell {
             classDescriptionLabel.text = product?.RoomNumber
             classSwitch.onTintColor = product?.MarkerColor
             classColor.backgroundColor = product?.MarkerColor
+            
         }
     }
     
@@ -44,12 +46,18 @@ class ClassCellPrototype : UITableViewCell {
         lbl.numberOfLines = 0
         return lbl
     }()
+  
     private let classSwitch : UISwitch = {
         let turnOnandOff = UISwitch()
         turnOnandOff.isOn = true
+        turnOnandOff.addTarget(self, action: #selector(switchChanged), for: UIControl.Event.valueChanged)
         return turnOnandOff
     }()
-    
+    @objc func switchChanged(mySwitch: UISwitch) {
+        _ = mySwitch.isOn
+        // Do something
+        
+    }
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         addSubview(classColor)
@@ -85,3 +93,4 @@ extension UIImage {
         return img!
     }
 }
+ */
